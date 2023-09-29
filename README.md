@@ -1,7 +1,5 @@
 # Sync_app
 
-© 2022 Veeam Software. Confidential information. All rights reserved. All trademarks are the property of their respective owners. 7.26.2023 | 1
- 
 # Test Task 
 Please implement a program that synchronizes two folders: source and 
 replica. The program should maintain a full, identical copy of source 
