@@ -30,8 +30,7 @@ class Replica:
 
     def create_folder_file(self):
         # get replica items:
-        replica = self.get_components()
-        replica_items = replica["folder_components"]
+        replica_items = os.listdir(self.r_path)
         # get source items:
         s_elements = os.listdir(self.s_path)
         # check if source items exist in replica items
@@ -49,25 +48,29 @@ class Replica:
                         if os.path.isdir(s_item_comp_path):
                             os.mkdir(r_item_comp_path)
                         else:
-                            with open(s_item_comp_path, 'r') as source_file, open(r_item_comp_path, 'w') as replica_file:
-                                replica_file.write(source_file.read())
+                            with open(s_item_comp_path, 'r') as s_file, open(r_item_comp_path, 'w') as r_file:
+                                r_file.write(s_file.read())
                 else:
                     with open(s_item_path, 'r') as source_file, open(r_item_path, 'w') as replica_file:
                         replica_file.write(source_file.read())
 
-
-    def rename_folder_file(self):
-        # verifica daca toate componentele folderului sunt identice in cele 2 surse
-        # daca da, atunci folderul a fost redenumit in sursa
-        # schimba denumirea si in replica
-        pass
-
-    # def delete_folder_file(self):
-    #     for item in os.listdir(self.r_path):
-    #         # print(item)
-    #         path = os.path.join(self.r_path, item)
-    #         # print(path)
-    #         os.rmdir(path)
+    def delete_folder_file(self):
+        # get source items:
+        source_items = os.listdir(self.s_path)
+        # get replica items:
+        r_elements = os.listdir(self.r_path)
+        # check if replica items exist in source items
+        for r_items in r_elements:
+            if r_items not in source_items:
+                r_item_path = os.path.join(self.r_path, r_items)
+                if os.path.isfile(r_item_path):
+                    os.remove(r_item_path)
+                elif os.path.isdir(r_item_path):
+                    directory_items = os.listdir(r_item_path)
+                    for directory_item in directory_items:
+                        dir_item_path = os.path.join(r_item_path, directory_item)
+                        os.rmdir(dir_item_path)
+                    os.rmdir(r_item_path)
 
     def sync(self, time):
         pass
@@ -76,5 +79,4 @@ class Replica:
 obj = Replica("C:\\Replica", "C:\\Source")
 obj.create_folder_file()
 obj.get_components()
-# obj.delete_folder_file()
-
+obj.delete_folder_file()
