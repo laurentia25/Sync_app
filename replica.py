@@ -32,24 +32,38 @@ class Replica:
         # get replica items:
         replica_items = os.listdir(self.r_path)
         # get source items:
-        s_elements = os.listdir(self.s_path)
-        # check if source items exist in replica items
-        for s_items in s_elements:
+        source_items = os.listdir(self.s_path)
+        # iterate thought the list of the items from source
+        for s_items in source_items:
+            # check if source items exist in replica items
             if s_items not in replica_items:
+                # recompose path for each item in source directory
                 s_item_path = os.path.join(self.s_path, s_items)
+                # recompose path for each item in replica directory
                 r_item_path = os.path.join(self.r_path, s_items)
+                # check if each item from source is a directory
                 if os.path.isdir(s_item_path):
                     # create in replica all folders which already exist in source
                     os.mkdir(r_item_path)
+                    # get a list of all items from source(directory)
                     each_folder_components = os.listdir(s_item_path)
+                    # iterate through the list with components
                     for each_folder_component in each_folder_components:
+                        # recompose the path for each one in source
                         s_item_comp_path = os.path.join(s_item_path, each_folder_component)
+                        # recompose the path for each one in replica
                         r_item_comp_path = os.path.join(r_item_path, each_folder_component)
+                        # check if the element is a directory
                         if os.path.isdir(s_item_comp_path):
+                            # create a directory at given path
                             os.mkdir(r_item_comp_path)
+                        # if the element is a file, open the file from source in read mode, and write it's content
+                        # in the new file from replica
                         else:
                             with open(s_item_comp_path, 'r') as s_file, open(r_item_comp_path, 'w') as r_file:
                                 r_file.write(s_file.read())
+                # if the element is a file, open the file from source in read mode, and write it's content
+                # in the new file from replica
                 else:
                     with open(s_item_path, 'r') as source_file, open(r_item_path, 'w') as replica_file:
                         replica_file.write(source_file.read())
@@ -74,11 +88,9 @@ class Replica:
                     for directory_item in directory_items:
                         # recompose path to each item af the directory
                         dir_item_path = os.path.join(r_item_path, directory_item)
+                        # remove all the files from the directory from given path
                         os.remove(dir_item_path)
                     else:
+                        # remove the empty directory
                         os.rmdir(r_item_path)
-
-
-# obj = Replica("C:\\Replica", "C:\\Source")
-# obj.delete_folder_file()
 
