@@ -19,5 +19,4 @@ class Source:
         return source
 
 
-obs = Source("C:\\Source")
-obs.get_folder_components()
+# obs = Source("C:\\Source")
