@@ -7,6 +7,7 @@ class Replica:
     def __init__(self, r_path, s_path):
         self.r_path = r_path
         self.source = Source(s_path)
+        self.s_path = s_path
 
     def get_components(self):
         # get a list with all directories available at self.r_path
@@ -28,25 +29,32 @@ class Replica:
         return replica
 
     def create_folder_file(self):
-        pass
+        # get replica items:
         replica = self.get_components()
         replica_items = replica["folder_components"]
-        s_elements = self.source.get_folder_components()
-        # print(s_elements)
-        for components in s_elements["folder_components"]:
-            # print(components)
-            if components not in replica_items:
-                # print(replica_items)
-                print(components)
-                # if isinstance(components, dict):
-                #     # get folder name in order to define path in replica folder
-                #     component = list(components.keys())[0]
-                #     component_path = os.path.join(self.r_path, component)
-                #     # create folder in replica
-                #     os.mkdir(component_path)
-                #     print(component_path)
-                # else:
-                #     pass
+        # get source items:
+        s_elements = os.listdir(self.s_path)
+        # check if source items exist in replica items
+        for s_items in s_elements:
+            if s_items not in replica_items:
+                s_item_path = os.path.join(self.s_path, s_items)
+                r_item_path = os.path.join(self.r_path, s_items)
+                if os.path.isdir(s_item_path):
+                    # create in replica all folders which already exist in source
+                    os.mkdir(r_item_path)
+                    each_folder_components = os.listdir(s_item_path)
+                    for each_folder_component in each_folder_components:
+                        s_item_comp_path = os.path.join(s_item_path, each_folder_component)
+                        r_item_comp_path = os.path.join(r_item_path, each_folder_component)
+                        if os.path.isdir(s_item_comp_path):
+                            os.mkdir(r_item_comp_path)
+                        else:
+                            with open(s_item_comp_path, 'r') as source_file, open(r_item_comp_path, 'w') as replica_file:
+                                replica_file.write(source_file.read())
+                else:
+                    with open(s_item_path, 'r') as source_file, open(r_item_path, 'w') as replica_file:
+                        replica_file.write(source_file.read())
+
 
     def rename_folder_file(self):
         # verifica daca toate componentele folderului sunt identice in cele 2 surse
@@ -54,9 +62,12 @@ class Replica:
         # schimba denumirea si in replica
         pass
 
-    def delete_folder_file(self):
-        pass
-        # verifica daca fisierul/folderul trebuie sterse sau updatate
+    # def delete_folder_file(self):
+    #     for item in os.listdir(self.r_path):
+    #         # print(item)
+    #         path = os.path.join(self.r_path, item)
+    #         # print(path)
+    #         os.rmdir(path)
 
     def sync(self, time):
         pass
@@ -65,3 +76,5 @@ class Replica:
 obj = Replica("C:\\Replica", "C:\\Source")
 obj.create_folder_file()
 obj.get_components()
+# obj.delete_folder_file()
+
